@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ name }}'s Watchlist</title>
+    <link rel="icon" href="{{ url_for('static', filename='267.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" type="text/css">
+</head>
+<body>
+    <h2>
+        <img alt="Crown" class="crown" src="{{ url_for('static', filename='crown.png') }}">
+        {{ name }}'s Watchlist
+    </h2>
+    {# 使用 length 过滤器获取movies 变量的长度 #}
+    <p>{{ movies|length }} Titles</p>
+    <ul class="movie-list">
+        {% for movie in movies %} {# 迭代 movies 变量 #}
+        <li>{{ movie.title }} - {{ movie.year }}</li> {# 等同于movies['title'] #}
+        {% endfor %} {# 使用 endfor 标签结束 for 语句 #}
+    </ul>
+    <footer>
+        <small>&copy; 2019 <a>copyright @ yukuaifeng</a></small>
+    </footer>
+
+</body>
+</html>
