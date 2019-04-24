@@ -10,6 +10,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
+#创建shell命令函数
 @app.cli.command()
 @click.option('--drop', is_flag = True, help='Create after drop.') #设置选项
 def initdb(drop):
@@ -18,6 +19,7 @@ def initdb(drop):
     db.create_all()
     click.echo('Initialized database.')
 
+#创建数据库的表函数
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20))
@@ -27,9 +29,22 @@ class Movie(db.Model):
     title = db.Column(db.String(60))
     year = db.Column(db.String(4))
 
+#模板上下文处理函数
+@app.context_processor
+def inject_user():#函数名可以随意修改
+    user = User.query.first()
+    return dict(user=user) #需要返回字典，等同于return {'user': user}
+
+#视图函数处理请求
 @app.route('/')
 def index():
-    return render_template('index.html',name=name, movies=movies)
+    movies = Movie.query.all()
+    return render_template('index.html', movies=movies)
+
+#404处理函数
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
 
 @app.route('/user/<name>')
 def user_page(name):
@@ -42,6 +57,8 @@ def test_url_for():
     print(url_for('user_page', name='jayce'))
     print(url_for('test_url_for',num=2))
     return 'Test page'
+
+
 
 name = 'Grey Li'
 movies = [
